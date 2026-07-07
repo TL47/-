@@ -370,7 +370,7 @@
 
             currentData.options.forEach((option, index) => {
                 const button = document.createElement('button');
-                button.className = "w-full text-left bg-white hover:bg-blue-50 text-gray-700 font-medium py-3 px-5 border border-purple-200 rounded-xl transition-colors shadow-sm active:bg-blue-100 cursor-pointer text-sm sm:text-base flex justify-between items-center";
+                button.className = "w-full text-left bg-white hover:bg-blue-50 text-gray-700 font-medium py-3 px-5 border border-blue-200 rounded-xl transition-colors shadow-sm active:bg-blue-100 cursor-pointer text-sm sm:text-base flex justify-between items-center";
                 button.innerHTML = `<span>${option}</span> <span class="text-blue-300 text-xs">●</span>`;
                 button.onclick = () => checkAnswer(index);
                 optionsContainer.appendChild(button);
@@ -384,7 +384,7 @@
 
             if (selectedIndex === currentData.correct) {
                 feedback.className = "h-8 text-sm font-medium mb-2 text-green-600 animate-float";
-                feedback.innerText = "¡Correcto! ¡Qué bien te acuerdas! 🥰";
+                feedback.innerText = "¡Correcto! ¡Qué bien te acuerdas! 💙";
 
                 // Pequeña pausa para pasar a la siguiente y que se lea el acierto
                 setTimeout(() => {
