@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Felices 3 Meses! 💙</title>
+    <!-- Tailwind CSS para un diseño moderno y responsive -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Librería para el efecto de confeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Animaciones personalizadas */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(20px) scale(0.95);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            75% {
+                transform: translateX(6px);
+            }
+        }
+
+        .animate-float {
+            animation: floatUp 0.4s ease-out forwards;
+        }
+
+        .animate-shake {
+            animation: shake 0.2s ease-in-out 2;
+        }
+    </style>
+</head>
+
+<body style="background: linear-gradient(135deg, #8BCEF7 0%, #cee8f8 60%, #8BCEF7 100%);"
+    class="min-h-screen font-sans text-gray-800 antialiased flex flex-col justify-between">
+
+    <!-- PANTALLA PRINCIPAL (HOME) -->
+    <div id="view-home" class="flex-grow flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto">
+        <div class="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-pink-100 w-full animate-float">
+            <span class="text-6xl mb-4 block">✨💙✨</span>
+            <h1 class="text-3xl font-extrabold text-rose-600 mb-2 tracking-tight">¡Felices 3 Meses!</h1>
+            <p class="text-gray-600 mb-8 text-sm sm:text-base">Hoy cumplimos nuestro primer trimestre juntas y he
+                preparado un espacio especial para nosotras. ¿Por dónde quieres empezar?</p>
+
+            <div class="space-y-4">
+                <button onclick="switchView('view-jar')"
+                    class="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-semibold py-4 px-6 rounded-2xl shadow-md transform active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer">
+                    <span class="text-xl">🫙</span> Frasco de Recuerdos
+                </button>
+                <button onclick="switchView('view-quiz')"
+                    class="w-full bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-2xl shadow-md transform active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer">
+                    <span class="text-xl">🧩</span> Love Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN: FRASCO DE RECUERDOS -->
+    <div id="view-jar"
+        class="hidden flex-grow flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto w-full">
+        <div
+            class="bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-pink-100 w-full flex flex-col items-center min-h-[500px] justify-between relative">
+
+            <!-- Botón Volver -->
+            <button onclick="switchView('view-home')"
+                class="absolute top-4 left-4 text-gray-500 hover:text-blue-500 flex items-center gap-1 text-sm font-medium transition-colors cursor-pointer">
+                ⬅️ Volver
+            </button>
+
+            <div class="absolute top-4 right-4 z-20">
+                <button onclick="toggleHistoryDropdown()"
+                    class="text-gray-500 hover:text-blue-500 flex items-center gap-1.5 text-sm font-medium transition-colors cursor-pointer focus:outline-none">
+                    📜 Historial <span id="history-badge"
+                        class="hidden bg-blue-400 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <!-- Menú flotante desplegable -->
+                <div id="history-dropdown"
+                    class="hidden absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-md border border-blue-100 rounded-2xl shadow-xl p-4 text-left animate-float">
+                    <p
+                        class="text-[11px] font-bold text-blue-500 mb-2 border-b border-blue-50 pb-1 uppercase tracking-wider">
+                        Anteriores sacados</p>
+                    <div id="history-container"
+                        class="space-y-2 max-h-[180px] overflow-y-auto pr-1 text-xs text-gray-600">
+                        <div class="text-gray-400 italic text-center py-2">Aún no has sacado notas...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 w-full">
+                <h2 class="text-2xl font-bold text-rose-600 mb-1">Frasco de Recuerdos</h2>
+                <p class="text-xs text-gray-500 px-4">Pulsa el frasco para sacar un papelito con una razón, un recuerdo
+                    o un vale especial.</p>
+            </div>
+
+            <!-- El Frasco (SVG Interactivo) -->
+            <div class="my-6 transform active:scale-95 transition-transform cursor-pointer relative group"
+                onclick="drawNote()">
+                <!-- Efecto de brillo detrás del frasco -->
+                <div
+                    class="absolute inset-0 bg-pink-300/30 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <svg class="w-40 h-48 mx-auto relative drop-shadow-md" viewBox="0 0 100 120" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <!-- Tapa -->
+                    <rect x="30" y="10" width="40" height="10" rx="3" fill="#e11d48" />
+                    <rect x="25" y="20" width="50" height="6" rx="2" fill="#be123c" />
+                    <!-- Cuerpo del Frasco -->
+                    <path
+                        d="M25 26C25 26 15 35 15 50V100C15 108.284 21.7157 115 30 115H70C78.2843 115 85 108.284 85 100V50C85 35 75 26 75 26H25Z"
+                        fill="#f43f5e" fill-opacity="0.1" stroke="#f43f5e" stroke-width="4" />
+                    <!-- Corazón decorativo dentro -->
+                    <path
+                        d="M50 72C50 72 42 66 38 60C34 54 38 48 44 48C47 48 50 52 50 52C50 52 53 48 56 48C62 48 66 54 62 60C58 66 50 72 50 72Z"
+                        fill="#e11d48" />
+                    <!-- Brillo del cristal -->
+                    <path d="M23 45C23 45 20 55 20 70" stroke="white" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <!-- Contenedor del papelito -->
+            <div id="note-container" class="w-full min-h-[100px] flex items-center justify-center px-2 mb-4">
+                <div class="text-gray-400 italic text-sm">Toca el frasco para descubrir algo...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN: LOVE QUIZ -->
+    <div id="view-quiz"
+        class="hidden flex-grow flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto w-full">
+        <div id="quiz-card"
+            class="bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-blue-100 w-full flex flex-col items-center min-h-[480px] justify-between relative">
+
+            <!-- Botón Volver -->
+            <button onclick="resetQuiz(); switchView('view-home');"
+                class="absolute top-4 left-4 text-gray-500 hover:text-blue-500 flex items-center gap-1 text-sm font-medium transition-colors cursor-pointer">
+                ⬅️ Volver
+            </button>
+
+            <div class="mt-8 w-full">
+                <h2 class="text-2xl font-bold text-blue-600 mb-1">El Love Quiz 🧩</h2>
+                <!-- Barra de progreso simple -->
+                <div class="w-full bg-blue-100 h-1.5 rounded-full mt-3 overflow-hidden">
+                    <div id="quiz-progress" class="bg-blue-500 h-full transition-all duration-300" style="width: 0%">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido Dinámico de la Pregunta -->
+            <div class="w-full my-4 flex-grow flex flex-col justify-center">
+                <p id="quiz-question" class="text-lg font-semibold text-gray-700 mb-6 px-2"></p>
+                <div id="quiz-options" class="space-y-3 w-full">
+                    <!-- Las opciones se generarán con JS -->
+                </div>
+            </div>
+
+            <!-- Feedback de error/acierto -->
+            <div id="quiz-feedback" class="h-8 text-sm font-medium mb-2 transition-all"></div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN: RECOMPENSA FINAL (CARTA) -->
+    <div id="view-reward"
+        class="hidden flex-grow flex flex-col items-center justify-center p-6 text-center max-w-lg mx-auto w-full">
+        <div
+            class="bg-sky-50/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl border-2 border-sky-200/60 w-full text-left relative animate-float shadow-[inset_0_0_40px_rgba(219,234,254,0.7)]">
+
+            <div class="text-center mb-6">
+                <span class="text-5xl block mb-2">📜💙</span>
+                <h2 class="text-3xl font-serif font-bold text-sky-950 tracking-tight">Para mi persona favorita</h2>
+                <p class="text-xs font-mono text-sky-700/70 mt-1">Nuestros primeros 3 meses</p>
+            </div>
+
+            <!-- Cuerpo de la carta -->
+            <div
+                class="font-serif text-sky-950 space-y-4 leading-relaxed text-sm sm:text-base overflow-y-auto max-h-[350px] pr-2">
+                <p>Mi amor,</p>
+                <p>¡Has superado el test a la perfección! (Aunque no tenía ninguna duda de que lo harías, porque nadie
+                    me conoce y nos cuida tan bien como tú).</p>
+                <p>Estos tres meses a tu lado han pasado volando, pero al mismo tiempo siento que hemos construido un
+                    montón de recuerdos preciosos. Me encanta cómo nos entendemos con solo mirarnos, las risas tontas
+                    que compartimos y lo cómoda que me haces sentir cada segundo que pasamos juntas.</p>
+                <p>Gracias por aparecer, por ser tal y como eres y por hacer que estos 90 días hayan sido tan
+                    jodidamente increíbles. Esto es solo el principio de todo lo que nos espera.</p>
+                <p class="pt-4 font-bold text-right text-rose-700">Te quiero hoy y cada día más. 💙</p>
+            </div>
+
+            <!-- Botón reiniciar todo -->
+            <div class="mt-8 text-center">
+                <button onclick="resetQuiz(); switchView('view-home')"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded-xl text-xs transition-colors shadow-sm cursor-pointer">
+                    Volver al Inicio
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de página discreto -->
+    <footer class="p-4 text-center text-xs text-gray-400 font-medium">
+        Hecho con 💙 para ti
+    </footer>
+
+
+    <!-- LOGICA JAVASCRIPT -->
+    <script>
+        // ==========================================
+        // 1. CONFIGURACIÓN DE TUS TEXTOS (EDITA AQUÍ)
+        // ==========================================
+
+        // Frases para el frasco de recuerdos
+        const jarMessages = [
+            "Me encanta cuando te ríes.",
+            "Eres mi persona favorita.",
+            "Todos los momentos contigo son especiales porque estás tú.",
+            "Vale por una tarde entera de tu peli favorita con papitas y mimos ilimitados.",
+            "Consigues alegrarme cualquier día gris.",
+            "Ser tan guapa debería ser delito",
+            "Gracias por ser como eres y quererme tanto",
+            "Te amo 💙",
+            "Eres más de lo que podía soñar",
+            "Gracias por tener tanta paciencia conmigo y por abrazarme tan fuerte.",
+            "Vale por un masaje relajante de espalda (no prometo hacerlo del todo bien pero si intentarlo).",
+            "Me encanta cómo me miras cuando crees que no te estoy viendo.",
+            "Contigo todo es más fácil y bonito. ¡Felices 3 meses, preciosa! 💙"
+        ];
+
+        // Preguntas del Quiz
+        // Nota: 'correct' es el índice de la respuesta correcta (empezando en 0)
+        const quizQuestions = [
+            {
+                question: "¿Te acuerdas de dónde fue nuestra primera cita oficial?",
+                options: ["Fuimos al cine y después cenamos fuera", "Fuimos a merendar fuera en el Yogur", "Fuimos a comprar ramen y después cenamos en tu casa", "Fuimos directas a cenar"],
+                correct: 0,
+                wrongFeedback: "¡Casi! Pero no... haz memoria."
+            },
+            {
+                question: "¿Cuál es mi momento favorito del día o de la semana contigo?",
+                options: [
+                    "Cuando estamos tranquilas sin hacer nada, solo abrazadas.",
+                    "Cuando nos empezamos a reír de cualquier tontería que no tiene gracia.",
+                    "Cuando me cuentas tus cosas y tus cosas favoritas con esa ilusión que le pones.",
+                    "Cualquier momento, mientras sea contigo me vale."
+                ],
+                correct: 3,
+                wrongFeedback: "Eso está muy bien, pero hay otra opción más correcta."
+            },
+            {
+                question: "¿Qué fue lo primero que pensé o en lo que me fijé de ti cuando empezamos a hablar en serio?",
+                options: [
+                    "En tus hoyuelos y lo guapísima que ibas.",
+                    "En tu culo.",
+                    "En lo rápido y bien que conectamos desde el minuto uno y que te iba a querer mucho.",
+                    "En lo cercana que eras y lo cariñosa que eras."
+                ],
+                correct: 2,
+                wrongFeedback: "A ver, eso también lo pensé porque me encantas, pero hay otra respuesta que es más correcta."
+            }
+        ];
+
+        // ==========================================
+        // 2. SISTEMA DE NAVEGACIÓN Y VISTAS
+        // ==========================================
+        function switchView(viewId) {
+            ['view-home', 'view-jar', 'view-quiz', 'view-reward'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+
+            // Cierra el desplegable del frasco al cambiar de sección
+            const dropdown = document.getElementById('history-dropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+        }
+
+        function toggleHistoryDropdown() {
+            const dropdown = document.getElementById('history-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // 3. LÓGICA DEL FRASCO DE RECUERDOS
+        // ==========================================
+        let lastMessageIndex = -1;
+        let jarHistory = [];
+        function drawNote() {
+            const container = document.getElementById('note-container');
+            const historyContainer = document.getElementById('history-container');
+            const badge = document.getElementById('history-badge');
+
+            // Si ya había un mensaje en pantalla, lo pasamos al historial
+            if (lastMessageIndex !== -1) {
+                const previousMessage = jarMessages[lastMessageIndex];
+                jarHistory.unshift(previousMessage); // Añadir al inicio
+
+                if (jarHistory.length > 4) {
+                    jarHistory.pop(); // Mantener máximo 4
+                }
+            }
+
+            // Calcular nueva frase aleatoria
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * jarMessages.length);
+            } while (randomIndex === lastMessageIndex && jarMessages.length > 1);
+
+            lastMessageIndex = randomIndex;
+            const message = jarMessages[randomIndex];
+
+            // Mostrar nota actual en grande
+            container.innerHTML = `
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-xl shadow-md text-gray-800 text-sm font-medium w-full text-center animate-float">
+            <p class="italic">"${message}"</p>
+        </div>
+    `;
+
+            // Actualizar el contenido del desplegable y el contador
+            if (jarHistory.length > 0) {
+                badge.classList.remove('hidden');
+                badge.innerText = jarHistory.length;
+
+                historyContainer.innerHTML = jarHistory.map(histMessage => `
+            <div class="bg-blue-50/50 border-l-2 border-blue-300 p-2 rounded-lg text-[11px] text-gray-600 italic animate-float">
+                "${histMessage}"
+            </div>
+        `).join('');
+            }
+        }
+
+        // ==========================================
+        // 4. LÓGICA DEL LOVE QUIZ
+        // ==========================================
+        let currentQuestionIndex = 0;
+
+        function renderQuestion() {
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.innerText = ""; // Limpiar feedback anterior
+
+            const progress = document.getElementById('quiz-progress');
+            const percentage = (currentQuestionIndex / quizQuestions.length) * 100;
+            progress.style.width = `${percentage}%`;
+
+            if (currentQuestionIndex >= quizQuestions.length) {
+                // Fin del juego: Lanzar confeti y pasar a la carta
+                triggerConfetti();
+                switchView('view-reward');
+                return;
+            }
+
+            const currentData = quizQuestions[currentQuestionIndex];
+            document.getElementById('quiz-question').innerText = currentData.question;
+
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = "";
+
+            currentData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = "w-full text-left bg-white hover:bg-blue-50 text-gray-700 font-medium py-3 px-5 border border-purple-200 rounded-xl transition-colors shadow-sm active:bg-blue-100 cursor-pointer text-sm sm:text-base flex justify-between items-center";
+                button.innerHTML = `<span>${option}</span> <span class="text-blue-300 text-xs">●</span>`;
+                button.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const currentData = quizQuestions[currentQuestionIndex];
+            const card = document.getElementById('quiz-card');
+            const feedback = document.getElementById('quiz-feedback');
+
+            if (selectedIndex === currentData.correct) {
+                feedback.className = "h-8 text-sm font-medium mb-2 text-green-600 animate-float";
+                feedback.innerText = "¡Correcto! ¡Qué bien te acuerdas! 🥰";
+
+                // Pequeña pausa para pasar a la siguiente y que se lea el acierto
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                }, 1000);
+            } else {
+                // Animación de agitar la tarjeta si falla
+                card.classList.add('animate-shake');
+                feedback.className = "h-8 text-sm font-medium mb-2 text-red-500";
+                feedback.innerText = currentData.wrongFeedback || "¡Ooooh, fallo! Vuelve a intentarlo. 😜";
+
+                setTimeout(() => {
+                    card.classList.remove('animate-shake');
+                }, 400);
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            renderQuestion();
+        }
+
+        function triggerConfetti() {
+            // Configuración del confeti (fuegos artificiales de corazones y colores)
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#8BCEF7', '#2563eb', '#f43f5e']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#8BCEF7', '#2563eb', '#f43f5e']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Inicializar el quiz al cargar la página
+        renderQuestion();
+    </script>
+</body>
+
+</html>
